@@ -27,3 +27,7 @@ app.get('/results.json', (req, res) => {
     })
   })
 })
+
+app.use((req, res, next) => {
+  res.status(404).render(__dirname + '/public/404.html')
+})
