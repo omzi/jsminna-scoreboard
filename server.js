@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 
 const app = express();
@@ -29,5 +31,5 @@ app.get('/results.json', (req, res) => {
 })
 
 app.use((req, res, next) => {
-  res.status(404).render(__dirname + '/public/404.html')
+  res.status(404).end(fs.readFileSync(path.join(__dirname, '/public/404.html'), { encoding: 'utf8'}))
 })
