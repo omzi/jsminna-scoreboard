@@ -13,6 +13,11 @@
   ],
   "author": "Omezibe Obioha",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:omzi/jsminna-scoreboard.git"
+  },
+  "homepage": "https://jsminna-scoreboard.herokuapp.com/",
   "dependencies": {
     "express": "^4.17.1",
     "hbs": "^4.1.1",
