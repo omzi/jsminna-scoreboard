@@ -1,0 +1,21 @@
+{
+  "name": "jsminna-leaderboard",
+  "version": "1.0.0",
+  "description": "JSMinna's leaderboard redesign",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon .",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "leaderboard",
+    "javascript"
+  ],
+  "author": "Omezibe Obioha",
+  "license": "MIT",
+  "dependencies": {
+    "cors-anywhere": "^0.4.3",
+    "express": "^4.17.1",
+    "hbs": "^4.1.1"
+  }
+}
