@@ -1,4 +1,3 @@
-const JSMINNA_LEADERBOARD_URL = 'https://jsmx-leaderboard.herokuapp.com/leaderboard/results.json';
 const loader = document.querySelector('.loader');
 const scoresList = document.querySelector('.scores-list');
 const topThreeRow = document.querySelector('.top-three .row');
@@ -107,41 +106,35 @@ const filterByTrack = (e) => {
 }
 
 // Fetch leaderboard details
-// TODO: Deploy my own cors-anywhere instnce to avoid rate limiting
 const getLeaderboard = () => {
-  fetch(`https://cors-anywhere.herokuapp.com/${JSMINNA_LEADERBOARD_URL}`)
+  fetch(`/results.json`)
     .then((res) => res.json())
     .then((data) => {
-      setCookie('JSMinnaLeaderboard', JSON.stringify(data), 30)
-      renderInterns(data);
+      console.log(data)
+
+      if (data.errorMessage === undefined) {
+        setCookie('JSMinnaLeaderboard', JSON.stringify(data), 30)
+        renderInterns(data);
+      } else if (getCookie("JSMinnaLeaderboard") !== null) {
+        Notify({
+          title: 'Unable to load current chart scores. Loading stale data...',
+          type: 'warning', position: 'bottom center', duration: 3500
+        })
+        // Load stale results
+        const data = JSON.parse(getCookie('JSMinnaLeaderboard')); renderInterns(data);
+      } else {
+        cuteAlert({
+          type: 'error', title: 'A fatal error occured :(',
+          message: 'Unable to retrieve both current & cached chart scores. Refresh the page to see if it fixes it',
+          buttonText: 'Reload'
+        }).then(() => {
+          location.reload()
+        })
+      }
     })
     .catch((e) => {
       console.error('Error :>>', e)
-      if (getCookie("JSMinnaLeaderboard") !== null) {
-        const data = JSON.parse(getCookie('JSMinnaLeaderboard')); renderInterns(data);
-        setCookie('JSMinnaLeaderboard', JSON.stringify(data), 30);
-      } else {
-        // Load stale results (uh, maybe)
-        cuteAlert({
-          type: 'question',
-          title: 'An error occured :(',
-          message: 'Unable to load current chart scores. Proceed to load stale data?',
-          confirmText: 'Alrighty🙂',
-          cancelText: 'Hell no🤨!'
-        }).then(e => {
-          // e == 'confirm' ? console.log('Alrighty') : console.log('Hell no!')
-          if (e === 'confirm') {
-            fetch('js/results.json')
-              .then((res) => res.json())
-              .then((data) => renderInterns(data))
-              .catch((e) => console.error('Error :>>', e))
-          } else {
-            // Gooodbye, I guess
-            trackChangeRadios.forEach(radio => radio.setAttribute('disabled', true))
-            loader.style.opacity = 0, location.reload();
-          }
-        })
-      }
+      // POST error to log, maybe
     })
 }
 
