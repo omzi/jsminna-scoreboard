@@ -212,6 +212,7 @@ button {
   flex-grow: 2;
   flex-basis: 10rem;
   font-size: 1.1rem;
+  font-family: "Futura LT Light", Arial, Helvetica, sans-serif;
 }
 
 .scores-list .item .score {
