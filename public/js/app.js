@@ -5,9 +5,7 @@ const trackChangeRadios = document.querySelectorAll('input[type=radio]');
 let allInternsTimeout = [];
 HTMLElement.prototype.empty = function() {
   const element = this;
-  while (element.hasChildNodes()) {
-      element.removeChild(element.lastChild);
-  }
+  while (element.hasChildNodes()) element.removeChild(element.lastChild);
 }
 
 const generateInternMarkup = (internDetails, position) => {
@@ -15,10 +13,10 @@ const generateInternMarkup = (internDetails, position) => {
   const trimmedNickname = nickname.trim().split(' ').join('');
 
   return position <= 3
-    ? `<div class="col s4 center ${position == 1 ? 'first pulse fadeInUp infinite offset-s4' : position == 2 ? 'second bounceInLeft' : 'third bounceInRight'} animated">
+    ? `<div class="col s4 center ${position === 1 ? 'first pulse fadeInUp infinite offset-s4' : position === 2 ? 'second bounceInLeft' : 'third bounceInRight'} animated">
         <div class="position">${position}</div>
-        ${position == 1 ? '<img src="img/gold-crown.png" class="crown" oncontextmenu="return !!0">' : ''}
-        <img src="https://robohash.org/${trimmedNickname}${track}" alt="${nickname}" oncontextmenu="return !!0">
+        ${position === 1 ? '<img src="img/gold-crown.png" class="crown" oncontextmenu="return false">' : '\n'}
+        <img src="https://robohash.org/${trimmedNickname}${track}" alt="${nickname}" oncontextmenu="return false">
         <div class="name">${nickname}</div>
         <div class="score">${score}</div>
       </div>`
@@ -58,7 +56,7 @@ const setCookie = (name, value, days) => {
   let expires = '';
   if (days) {
     const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1e3);
     expires = `; expires=${date.toUTCString()}`;
   }
   document.cookie = name + '=' + (value || '') + expires + '; path=/';
@@ -95,8 +93,7 @@ const filterByTrack = (e) => {
     }
   } else {
     cuteAlert({
-      type: 'error',
-      title: 'A fatal error occured :(',
+      type: 'error', title: 'A fatal error occured :(',
       message: 'Unable to retrieve cached chart scores. The page needs to be reloaded to fix this',
       buttonText: 'Reload'
     }).then(() => {
@@ -107,18 +104,16 @@ const filterByTrack = (e) => {
 
 // Fetch leaderboard details
 const getLeaderboard = () => {
-  fetch(`/results.json`)
+  fetch('/results.json')
     .then((res) => res.json())
     .then((data) => {
-      console.log(data)
-
-      if (data.errorMessage === undefined) {
+      if (!data.errorMessage) {
         setCookie('JSMinnaLeaderboard', JSON.stringify(data), 30)
         renderInterns(data);
-      } else if (getCookie("JSMinnaLeaderboard") !== null) {
+      } else if (getCookie("JSMinnaLeaderboard")) {
         Notify({
           title: 'Unable to load current chart scores. Loading stale data...',
-          type: 'warning', position: 'bottom center', duration: 3500
+          type: 'warning', position: 'bottom center', duration: 4e3
         })
         // Load stale results
         const data = JSON.parse(getCookie('JSMinnaLeaderboard')); renderInterns(data);
@@ -134,7 +129,6 @@ const getLeaderboard = () => {
     })
     .catch((e) => {
       console.error('Error :>>', e)
-      // POST error to log, maybe
     })
 }
 
